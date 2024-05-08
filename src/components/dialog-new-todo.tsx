@@ -65,7 +65,7 @@ export function DialogNewToDo() {
       duration: 1600,
       title: "New To-Do success.",
     });
-    () => setOpen(false);
+    setOpen(false);
   }
 
   const form = useForm<z.infer<typeof formSchema>>({
