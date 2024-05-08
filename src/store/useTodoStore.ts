@@ -1,9 +1,15 @@
 import { TodoItem } from "@/interfaces/ToDo";
+import { TODO_TYPE } from "@/types";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import dayjs from "dayjs";
 
+// todosView: TodoItem[];
 interface TodoStoreState {
   todos: TodoItem[];
+  currentTodoType: TODO_TYPE;
+  updateCurrentTodoType: (type: TODO_TYPE) => void;
+  getTodosByType: (type?: TODO_TYPE) => TodoItem[];
   addTodo: (todo: TodoItem) => void;
   deleteTodo: (todoId: string) => void;
   completeTodo: (todoId: string) => void;
@@ -15,6 +21,11 @@ export const useTodoStore = create<TodoStoreState>()(
   persist(
     (set, get) => ({
       todos: [],
+      currentTodoType: TODO_TYPE.today,
+      updateCurrentTodoType: (type: TODO_TYPE) =>
+        set(() => ({
+          currentTodoType: type,
+        })),
       addTodo: (todo: TodoItem) =>
         set((state) => ({
           todos: [
@@ -40,9 +51,58 @@ export const useTodoStore = create<TodoStoreState>()(
             return todo;
           }),
         })),
-      getToday: () => {
-        const todoToday = get().todos.filter;
-        return todoToday;
+      getTodosByType: (type?: TODO_TYPE) => {
+        const _type = type ?? get().currentTodoType;
+        switch (_type) {
+          case TODO_TYPE.completed: {
+            const todoIsCompleted = get().todos.filter((todo) => {
+              if (todo.isCompleted) {
+                return todo;
+              }
+            });
+            return todoIsCompleted;
+          }
+          case TODO_TYPE.incomplete: {
+            const todoIsCompleted = get().todos.filter((todo) => {
+              if (!todo.isCompleted) {
+                return todo;
+              }
+            });
+            return todoIsCompleted;
+          }
+          case TODO_TYPE.overdue: {
+            const todoIsOverdue = get().todos.filter((todo) => {
+              if (dayjs().isAfter(dayjs(todo.dueDate))) {
+                return todo;
+              }
+            });
+            return todoIsOverdue;
+          }
+          case TODO_TYPE.today: {
+            const todayItem = get().todos.filter((todo) => {
+              if (dayjs().isSame(dayjs(todo.dueDate), "day")) {
+                return todo;
+              }
+            });
+            return todayItem.sort((a, b) => {
+              return a.isCompleted >= b.isCompleted ? 1 : -1;
+            });
+          }
+          case TODO_TYPE.tomorrow: {
+            const tomorrowItem = get().todos.filter((todo) => {
+              if (dayjs().isBefore(dayjs(todo.dueDate))) {
+                return todo;
+              }
+            });
+            return tomorrowItem.sort((a, b) => {
+              return a.isCompleted >= b.isCompleted ? 1 : -1;
+            });
+          }
+          default:
+            return get().todos.sort((a, b) => {
+              return a.isCompleted >= b.isCompleted ? 1 : -1;
+            });
+        }
       },
     }),
     {

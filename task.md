@@ -1,7 +1,7 @@
 Build a simple to-do list application using React (TypeScript). The application should allow users to:
 - [x] Add new to-do items with a title, optional description, and a due date.
 - [x] Mark existing to-do items as complete or incomplete.
-- [ ] Filter for to-do items (show all, completed, incomplete, overdue).
+- [x] Filter for to-do items (show all, completed, incomplete, overdue).
 - [x] Delete to-do items with confirmation.
 - [ ] Undo the last deleted item within 15 seconds.
 
