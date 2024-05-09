@@ -13,13 +13,15 @@ import { Button } from "@/components/ui/button";
 import { useTodoStore } from "@/store/useTodoStore";
 import { TrashIcon } from "./ui/icon";
 import { TodoItem } from "@/interfaces/ToDo";
+import { toast } from "sonner";
 
 interface DialogConfirmDeleteProps {
   todo: TodoItem;
 }
 
 export function DialogConfirmDelete({ todo }: DialogConfirmDeleteProps) {
-  const { deleteTodo } = useTodoStore((state) => state);
+  const { deleteTodo, reverseTodo } = useTodoStore((state) => state);
+  const DURATION_UNDO = 15000;
 
   return (
     <AlertDialog>
@@ -40,6 +42,21 @@ export function DialogConfirmDelete({ todo }: DialogConfirmDeleteProps) {
           <AlertDialogAction
             onClick={() => {
               deleteTodo(todo.id);
+              toast(
+                `"${todo.title.slice(0, 20)}${
+                  todo.title.length > 20 ? "..." : ""
+                }" has been deleted.`,
+                {
+                  id: todo.id,
+                  duration: DURATION_UNDO,
+                  action: {
+                    label: "Undo",
+                    onClick: () => {
+                      reverseTodo(todo.id);
+                    },
+                  },
+                }
+              );
             }}
           >
             Delete

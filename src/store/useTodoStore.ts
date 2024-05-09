@@ -7,11 +7,13 @@ import dayjs from "dayjs";
 // todosView: TodoItem[];
 interface TodoStoreState {
   todos: TodoItem[];
+  trash: TodoItem[];
   currentTodoType: TODO_TYPE;
   updateCurrentTodoType: (type: TODO_TYPE) => void;
   getTodosByType: (type?: TODO_TYPE) => TodoItem[];
   addTodo: (todo: TodoItem) => void;
   deleteTodo: (todoId: string) => void;
+  reverseTodo: (todoId: string) => void;
   completeTodo: (todoId: string) => void;
 }
 
@@ -21,6 +23,7 @@ export const useTodoStore = create<TodoStoreState>()(
   persist(
     (set, get) => ({
       todos: [],
+      trash: [],
       currentTodoType: TODO_TYPE.today,
       updateCurrentTodoType: (type: TODO_TYPE) =>
         set(() => ({
@@ -35,10 +38,28 @@ export const useTodoStore = create<TodoStoreState>()(
             },
           ],
         })),
-      deleteTodo: (todoId: string) =>
-        set((state) => ({
-          todos: state.todos.filter((todo) => todo.id !== todoId),
-        })),
+      deleteTodo: (todoId: string) => {
+        const todoDeleted = get().todos.find(
+          (todo: TodoItem) => todo.id === todoId
+        );
+        if (todoDeleted) {
+          set((state) => ({
+            todos: state.todos.filter((todo) => todo.id !== todoId),
+            trash: [...state.trash, todoDeleted],
+          }));
+        }
+      },
+      reverseTodo: (todoId: string) => {
+        const todReversed = get().trash.find(
+          (todo: TodoItem) => todo.id === todoId
+        );
+        if (todReversed) {
+          set((state) => ({
+            trash: state.trash.filter((todo) => todo.id !== todoId),
+            todos: [...state.todos, todReversed],
+          }));
+        }
+      },
       completeTodo: (todoId: string) =>
         set((state) => ({
           todos: state.todos.map((todo) => {
@@ -90,7 +111,7 @@ export const useTodoStore = create<TodoStoreState>()(
           }
           case TODO_TYPE.tomorrow: {
             const tomorrowItem = get().todos.filter((todo) => {
-              if (dayjs().isBefore(dayjs(todo.dueDate))) {
+              if (dayjs().isBefore(dayjs(todo.dueDate), "day")) {
                 return todo;
               }
             });
