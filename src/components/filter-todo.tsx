@@ -14,7 +14,7 @@ export default function FilterTodo() {
   return (
     <div>
       <Select onValueChange={updateCurrentTodoType}>
-        <SelectTrigger className="mt-1">
+        <SelectTrigger className="mt-1 bg-white">
           <SelectValue placeholder=" Filter todos" />
         </SelectTrigger>
         <SelectContent>

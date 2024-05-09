@@ -15,7 +15,7 @@ export default function ToDoList() {
     return (
       <li
         key={todo.id}
-        className="flex flex-row items-end justify-between p-4 space-x-1 border-gray-200 rounded-lg shadow-md border-opacity-20"
+        className="flex flex-row items-end justify-between p-4 space-x-1 bg-white border-gray-200 rounded-lg shadow-md border-opacity-20"
       >
         <div className="flex flex-row space-x-1">
           <Checkbox
