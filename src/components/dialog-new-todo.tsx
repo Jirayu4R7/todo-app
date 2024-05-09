@@ -23,7 +23,7 @@ import { DatePicker } from "./date-picker";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useToast } from "./ui/use-toast";
+import { toast } from "sonner";
 import { useTodoStore } from "@/store/useTodoStore";
 import { PenIcon } from "./ui/icon";
 import dayjs from "dayjs";
@@ -49,7 +49,6 @@ const formSchema = z.object({
 export function DialogNewToDo() {
   const [open, setOpen] = useState(false);
   const { addTodo } = useTodoStore((state) => state);
-  const { toast } = useToast();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const newToDo: TodoItem = {
@@ -61,10 +60,7 @@ export function DialogNewToDo() {
     };
     addTodo(newToDo);
     form.reset();
-    toast({
-      duration: 1600,
-      title: "New To-Do success.",
-    });
+    toast("Add To-Do success.");
     setOpen(false);
   }
 
