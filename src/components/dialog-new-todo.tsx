@@ -56,7 +56,7 @@ export function DialogNewToDo() {
       title: values.title,
       description: values.description,
       dueDate: values.dueDate,
-      id: dayjs().millisecond().toString(),
+      id: dayjs().valueOf().toString(),
       isCompleted: false,
     };
     addTodo(newToDo);
