@@ -5,11 +5,24 @@ import { cn } from "@/lib/utils";
 import DialogTodoDetail from "./dialog-todo-detail";
 import { DialogConfirmDelete } from "./dialog-confirm-delete";
 import { TODO_TYPE } from "@/types";
+import { useEffect } from "react";
+import { toast } from "sonner";
+
+const DURATION_UNDO = 15000;
 
 export default function ToDoList() {
-  const { todos, completeTodo, getTodosByType, currentTodoType } = useTodoStore(
-    (state) => state
-  );
+  const { todos, trash, currentTodoType, completeTodo, getTodosByType } =
+    useTodoStore((state) => state);
+
+  useEffect(() => {
+    if (trash?.length > 0) {
+      trash.map((todo: TodoItem) => {
+        setTimeout(() => {
+          toast.dismiss(todo.id);
+        }, DURATION_UNDO);
+      });
+    }
+  }, [trash]);
 
   const TodoItem = (todo: TodoItem) => {
     return (

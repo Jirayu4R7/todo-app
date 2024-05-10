@@ -21,7 +21,6 @@ interface DialogConfirmDeleteProps {
 
 export function DialogConfirmDelete({ todo }: DialogConfirmDeleteProps) {
   const { deleteTodo, reverseTodo } = useTodoStore((state) => state);
-  const DURATION_UNDO = 15000;
 
   return (
     <AlertDialog>
@@ -48,7 +47,7 @@ export function DialogConfirmDelete({ todo }: DialogConfirmDeleteProps) {
                 }" has been deleted.`,
                 {
                   id: todo.id,
-                  duration: DURATION_UNDO,
+                  duration: Infinity,
                   action: {
                     label: "Undo",
                     onClick: () => {
