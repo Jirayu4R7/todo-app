@@ -3,7 +3,7 @@ Build a simple to-do list application using React (TypeScript). The application 
 - [x] Mark existing to-do items as complete or incomplete.
 - [x] Filter for to-do items (show all, completed, incomplete, overdue).
 - [x] Delete to-do items with confirmation.
-- [ ] Undo the last deleted item within 15 seconds.
+- [x] Undo the last deleted item within 15 seconds.
 
 Technical Requirements:
 - Persist the to-do list data in local storage.
