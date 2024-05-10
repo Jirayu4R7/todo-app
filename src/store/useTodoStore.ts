@@ -4,27 +4,34 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import dayjs from "dayjs";
 
-// todosView: TodoItem[];
-interface TodoStoreState {
+type State = {
   todos: TodoItem[];
   trash: TodoItem[];
   currentTodoType: TODO_TYPE;
+};
+
+type Actions = {
   updateCurrentTodoType: (type: TODO_TYPE) => void;
   getTodosByType: (type?: TODO_TYPE) => TodoItem[];
   addTodo: (todo: TodoItem) => void;
   deleteTodo: (todoId: string) => void;
   reverseTodo: (todoId: string) => void;
   completeTodo: (todoId: string) => void;
-}
+  resetTrash: () => void;
+};
+
+const initialState: State = {
+  todos: [],
+  trash: [],
+  currentTodoType: TODO_TYPE.today,
+};
 
 const STORAGE_NAME = "todo-storage";
 
-export const useTodoStore = create<TodoStoreState>()(
+export const useTodoStore = create<State & Actions>()(
   persist(
     (set, get) => ({
-      todos: [],
-      trash: [],
-      currentTodoType: TODO_TYPE.today,
+      ...initialState,
       updateCurrentTodoType: (type: TODO_TYPE) =>
         set(() => ({
           currentTodoType: type,
@@ -125,10 +132,15 @@ export const useTodoStore = create<TodoStoreState>()(
             });
         }
       },
+      resetTrash: () => {
+        set({
+          trash: [],
+        });
+      },
     }),
     {
       name: STORAGE_NAME,
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );
