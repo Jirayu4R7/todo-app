@@ -58,8 +58,11 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ ...props }) => <ChevronLeftIcon className="h-4 w-4" />,
-        IconRight: ({ ...props }) => <ChevronRightIcon className="h-4 w-4" />,
+        // https://github.com/shadcn-ui/ui/issues/3072
+        // @ts-ignore
+        IconLeft: ({...props}) => <ChevronLeftIcon className="w-4 h-4" />,
+        // @ts-ignore
+        IconRight: ({...props}) => <ChevronRightIcon className="w-4 h-4" />,
       }}
       {...props}
     />
